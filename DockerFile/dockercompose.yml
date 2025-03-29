@@ -1,0 +1,26 @@
+services:
+  app-server:
+    build:
+      context: .
+      dockerfile: ./Docker/Dockerfile
+    image:
+      app:IMAGE_APP
+    container_name: app-server-1
+    env_file:
+      - .env
+    command: uvicorn src.server:app --host 0.0.0.0 --port ${PARKING_PORT}
+    volumes:
+      - ${VOLUME_VIDEO_PATH}:${LOCAL_VIDEO_PATH}
+      - ${VOLUME_CUTS_PATH}:${LOCAL_CUTS_PATH}
+    ports:
+      - "${PARKING_PORT}:${PARKING_PORT}"
+    deploy: 
+      resources: 
+        limits: 
+          cpus: '6' 
+          memory: '12G'
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]

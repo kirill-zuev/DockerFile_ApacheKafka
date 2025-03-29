@@ -1,0 +1,38 @@
+services:
+  app-server-1:
+    build:
+      context: .
+      dockerfile: /home/couser/videorecorder/Docker/Dockerfile_minio
+    image:
+      app:IMAGE_APP
+    container_name: app-server-1
+    env_file:
+      - .env.19
+    command: uvicorn src.server:app --host 0.0.0.0 --port 8100
+    volumes:
+      - archive:/usr/src/app/archive
+      - cuts:/usr/src/app/cuts
+    network_mode: host
+    deploy:
+      resources:
+        reservations:
+          cpus: '1'
+          memory: '6G'
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+  
+volumes:
+  archive:
+    driver: local
+  cuts:
+    driver: local
+
+# volumes:
+#   archive:
+#     driver: local
+#     driver_opts:
+#       o: bind
+#       device: /home
+#       type: none

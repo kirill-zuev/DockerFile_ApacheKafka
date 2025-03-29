@@ -1,0 +1,12 @@
+FROM ubuntu:22.04
+
+WORKDIR /usr/src/app
+
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y && apt-get install python3 -y && apt-get install python3-pip -y
+
+COPY src/requirements.txt requirements.txt
+RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org  -r requirements.txt
+
+RUN mkdir archive
+RUN mkdir cuts
+COPY ./src ./src
